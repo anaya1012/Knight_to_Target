@@ -1,149 +1,148 @@
 import java.util.*;
-class node
+class Coordinate
 {
-	node next;
-	int start;
-	int end;
-	node(int st,int en)
+	int xpos;
+	int ypos;
+	Coordinate(int sp,int ep)
 	{
-		next=null;
-		start=st;
-		end=en;
+		xpos=sp;
+		ypos=ep;
 	}
 }
-class list
+class KnT
 {
-	int nv;
-	node head[]=new node[50];
-	void insert(int strt,int end,int i)
+	int xposk;
+	int yposk;
+	int xpost;
+	int ypost;
+	int cnt;
+	int posx[]={-1,1,-2,2,-1,1,-2,2};
+	int posy[]={-2,-2,-1,-1,2,2,1,1};
+	KnT(int xposkn,int yposkn,int xpostarg,int ypostarg)
 	{
-		node temp=new node(strt,end);
-		if(head[i]==null)
+		xposk=xposkn;
+		yposk=yposkn;
+		xpost=xpostarg;
+		ypost=ypostarg;
+		cnt=0;
+
+	}
+	boolean isinside(int x,int y)
+	{
+		if(x<=8 && x>0 && y<=8 && y>0)
 		{
-			head[i]=temp;
+			return true;
 		}
 		else
 		{
-			node ptr=head[i];
-			while(ptr.next!=null)
-			{
-				ptr=ptr.next;
-			}
-			ptr.next=temp;
+			return false;
 		}
 	}
-	int cntsteps(int spk,int endk,int spt,int endt)
+	void cntsteps()
 	{
-		Queue<node> q=new LinkedList<node>();
-		int visited[][]=new int[8][8];
-		visited[spk-1][endk-1]=1;
-		node ptr=new node(spk,endk);
-		node ptr1=new node(50,50);
-		int i=0;
-		int cnt=0;
-		q.add(ptr);
-		q.add(ptr1);
-		while(!q.isEmpty())
+		Queue<Coordinate> q=new LinkedList<Coordinate>();
+		Coordinate c=new Coordinate(xposk,yposk);
+		q.add(c);
+		q.add(null);
+		while(true)
 		{
-			ptr=q.remove();
-			if(ptr.start!=50 && ptr.end!=50)
+			Coordinate c1=q.remove();
+			if(c1==null)
 			{
-				
-			
-					if(ptr.start-1<=8 && ptr.start-1>0 && ptr.end-2<=8 && ptr.end-2>0)		//Move doesn't exceed chessboard
-					{
-						insert(ptr.start-1,ptr.end-2,i);
-						
-					}
-					if(ptr.start+1<=8 && ptr.start+1>0 && ptr.end-2<=8 && ptr.end-2>0)		//Move doesn't exceed chessboard
-					{
-						insert(ptr.start+1,ptr.end-2,i);
-					}
-					if(ptr.start-2<=8 && ptr.start-2>0 && ptr.end-1<=8 && ptr.end-1>0)		//Move doesn't exceed chessboard
-					{
-						insert(ptr.start-2,ptr.end-1,i);
-					}
-					if(ptr.start+2<=8 && ptr.start+2>0 && ptr.end-1<=8 && ptr.end-1>0)		//Move doesn't exceed chessboard
-					{
-						insert(ptr.start+2,ptr.end-1,i);
-					}
-					if(ptr.start-1<=8 && ptr.start-1>0 && ptr.end+2<=8 && ptr.end+2>0)		//Move doesn't exceed chessboard
-					{
-						insert(ptr.start-1,ptr.end+2,i);
-						
-					}
-					if(ptr.start+1<=8 && ptr.start+1>0 && ptr.end+2<=8 && ptr.end+2>0)		//Move doesn't exceed chessboard
-					{
-						insert(ptr.start+1,ptr.end+2,i);
-					}
-					if(ptr.start-2<=8 && ptr.start-2>0 && ptr.end+1<=8 && ptr.end+1>0)		//Move doesn't exceed chessboard
-					{
-						insert(ptr.start-2,ptr.end+1,i);
-					}
-					if(ptr.start+2<=8 && ptr.start+2>0 && ptr.end+1<=8 && ptr.end+1>0)		//Move doesn't exceed chessboard
-					{
-						insert(ptr.start+2,ptr.end+1,i);
-					}
-				
-				ptr=head[i];
-				while(ptr!=null)
+				if(!q.isEmpty())
 				{
-					//System.out.println(ptr.start);
-					//System.out.println(ptr.end);
-					if(visited[(ptr.start)-1][(ptr.end)-1]!=1)
-					{
-						if(ptr.start==spt && ptr.end==endt)
-						{
-							break;
-						}
-						q.add(ptr);
-						visited[(ptr.start)-1][(ptr.end)-1]=1;
-					}
-					ptr=ptr.next;
+					q.add(null);
 				}
-				if(ptr!=null)
-				{
-					break;
-				}
-				i++;
-				//System.out.println(i);
+
+				cnt++;
 			}
 			else
 			{
-				cnt++;
-				q.add(ptr1);
+				if(c1.xpos==xpost && c1.ypos==ypost)
+				{
+					break;
+				}
+				else
+				{
+
+					for(int i=0;i<8;i++)
+					{
+						if(isinside(c1.xpos-posx[i],c1.ypos-posy[i]))
+						{
+							Coordinate c2=new Coordinate(c1.xpos-posx[i],c1.ypos-posy[i]);
+							q.add(c2);
+						}
+					}
+
+
+				}
 			}
 		}
-		return cnt;
+	}
+	void display()
+	{
+		System.out.println("Count is: "+cnt);
 	}
 }
+public class Knight_1 {
 
-public class Knight {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		Scanner sc=new Scanner(System.in);
 		int xk,yk;
 		int xt,yt;
 		int ch=0;
-		list l=new list();
+		KnT k;
 		do
 		{
-			System.out.print("Enter x-cordinate of knight: ");
-			xk=sc.nextInt();
-			System.out.print("Enter y-ccordinate of knight: ");
-			yk=sc.nextInt();
-			System.out.print("Enter x-coordinate of target: ");
-			xt=sc.nextInt();
-			System.out.print("Enter y-coordinate of target; ");
-			yt=sc.nextInt();
-			int cnt=l.cntsteps(xk, yk, xt, yt);
-			System.out.println("Count of the steps is "+(cnt+1));
+			do
+			{
+				System.out.print("Enter x-cordinate of knight: ");
+				xk=sc.nextInt();
+				if(xk<0 || xk>8)
+				{
+					System.out.println("Enter a valid position");
+				}
+			}while(xk<=0 || xk>8);
+			do
+			{
+				System.out.print("Enter y-ccordinate of knight: ");
+				yk=sc.nextInt();
+				if(yk<0 ||yk>8)
+				{
+					System.out.println("Enter a valid position");
+				}
+
+			}while(yk<0 ||yk>8);
+			do
+			{
+				System.out.print("Enter x-coordinate of target: ");
+				xt=sc.nextInt();
+				if(xt<0 || xt>8)
+				{
+					System.out.println("Enter a valid position");
+				}
+			}while(xt<=0 || xt>8);
+			do
+			{
+				System.out.print("Enter y-coordinate of target; ");
+				yt=sc.nextInt();
+				if(yt<0 ||yt>8)
+				{
+					System.out.println("Enter a valid position");
+				}
+
+			}while(yt<0 ||yt>8);
+			k=new KnT(xk,yk,xt,yt);
+			k.cntsteps();
+			k.display();
 			System.out.println("--------------------------------");
 			System.out.println("Do you want to play again 1.Yes 2.No \nEnter choice");
 			ch=sc.nextInt();
 		}while(ch!=2);
 
 	}
+
+
 
 }
